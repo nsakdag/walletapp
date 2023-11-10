@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wallet App</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Header Section -->
+    <div class="text-center text-capitalize bg-secondary">
+      <h1 class="p-4">
+        My Wallet App <i class="fa-regular fa-credit-card text-dark"></i>
+      </h1>
+    </div>
+
+    <!-- Spending Form Section -->
+    <div
+      id="problem-1"
+      class="border border-secondary-subtle rounded-4 w-50 m-auto mt-4"
+    >
+      <h2 class="text-capitalize text-center p-3 mb-3">Harcama Formu</h2>
+      <form id="form" class="row g-3 mx-3 mb-4">
+        <!-- Date Input -->
+        <div class="col-12 col-md-6 fw-semibold">
+          <label for="date" class="form-label">Tarih</label>
+          <input type="date" class="form-control" id="date" />
+        </div>
+
+        <!-- Quantity Input -->
+        <div class="col-12 col-md-6 fw-semibold">
+          <label for="quantity" class="form-label">Harcama Miktarı</label>
+          <input
+            type="number"
+            class="form-control"
+            id="quantity"
+            placeholder="1000 ₺"
+          />
+        </div>
+
+        <!-- Spend Type Input -->
+        <div class="col-12 fw-semibold">
+          <label for="spendtype" class="form-label">Harcama Alanı</label>
+          <input
+            type="text"
+            class="form-control"
+            id="spendtype"
+            placeholder="Kira, Fatura, Kredi Kartı..."
+          />
+        </div>
+
+        <!-- Save Button -->
+        <div class="w-50 m-auto text-center">
+          <button id="kaydetbtn" type="button" class="btn btn-danger mt-4">
+            Kaydet
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Income Section -->
+    <div class="row m-auto">
+      <div class="col-12 col-md-6 w-50 m-auto mt-4 d-flex gap-4">
+        <!-- Income Input -->
+        <div id="problem-2" class="col-12 col-md-10">
+          <input
+            class="form-control"
+            type="number"
+            id="income"
+            placeholder="Gelirinizi giriniz"
+          />
+        </div>
+
+        <!-- Add Income Button -->
+        <div class="col-12 col-md-2">
+          <button id="ekle-btn" type="button" class="btn btn-success px-4">
+            Ekle
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Expense Table -->
+    <table
+      id="expense-table"
+      class="table table-striped w-50 m-auto mt-4 table-bordered"
+    >
+      <!-- Table Headers -->
+      <tr>
+        <th class="text-center">Tarih</th>
+        <th class="text-center w-50">Harcama Alanı</th>
+        <th class="text-center">Miktar (₺)</th>
+        <th class="text-center">İşlem</th>
+      </tr>
+      <!-- Table Data -->
+    </table>
+
+    <!-- Summary Section -->
+    <div id="table2" class="w-50 m-auto">
+      <table class="table table-striped w-50 ms-auto mt-4 table-bordered">
+        <!-- Summary Rows -->
+        <tr>
+          <td class="text-end pe-3">Geliriniz (₺):</td>
+          <td class="text-end" id="income-total"></td>
+        </tr>
+        <tr>
+          <td class="text-end pe-3">Gideriniz (₺):</td>
+          <td class="text-end" id="expense-total"></td>
+        </tr>
+        <tr>
+          <td class="text-end pe-3">Kalan (₺):</td>
+          <td class="text-end" id="balance"></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Clear Information Button -->
+    <div class="w-50 m-auto text-center">
+      <button id="eraser" type="button" class="btn btn-secondary mt-4">
+        Bilgileri Temizle
+      </button>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  body {
+    height: 100vh;
+  }
+  h1 {
+    color: #feea76;
+  }
+  #problem-1 {
+    height: auto;
+    overflow: hidden;
+    overflow-y: scroll;
+    background-color: rgba(0, 0, 0, 0.486);
+    color: white;
+  }
+  #problem-1::-webkit-scrollbar {
+    display: none;
+  }
+  #problem-2 {
+    width: 90%;
+  }
+
