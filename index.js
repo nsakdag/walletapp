@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const newIncomeTotal = currentIncomeTotal + parseFloat(incomeInput.value);
   incomeTotal.textContent = newIncomeTotal;
 
-  // *************************************************************************** //
+
 
   /* -------------------------------------------------------------------------- */
   /*                        3. Write Add button function                        */
