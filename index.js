@@ -1,98 +1,128 @@
 document.addEventListener("DOMContentLoaded", function () {
-  /* ------------------------------ harcam formu ------------------------------ */
+  /* ---------------------- call whole elements form DOM ---------------------- */
 
-  const kaydetButton = document.getElementById("kaydetbtn");
-
-  /* -------------------------------- gelirler -------------------------------- */
-  const incomeInput = document.getElementById("income");
-  const incomeTotalElement = document.getElementById("income-total");
-  const ekleBtn = document.getElementById("ekle-btn");
-
-  /* -------------------------------- giderler -------------------------------- */
-  const expenseEl = document.getElementById("expense-total");
-  const balanceEl = document.getElementById("balance");
-
-  /* --------------------------------- silici --------------------------------- */
-
+  const formEl = document.getElementById("form");
+  const table1Body = document.getElementById("table1-body");
+  const incomeInput = document.getElementById("income-input");
+  const addBtn = document.getElementById("add-btn");
+  const incomeTotal = document.getElementById("income-total");
+  const expenseTotal = document.getElementById("expense-total");
+  const balance = document.getElementById("balance");
   const eraserEl = document.getElementById("eraser");
-  eraserEl.addEventListener("click", function () {
-    balanceEl.textContent = "0";
-    expenseEl.textContent = "0";
-    incomeTotalElement.textContent = "0";
-    const expenseTable = document.getElementById("expense-table");
 
-    // Remove all rows except the first one (table headers)
-    const rowsToRemove = Array.from(expenseTable.querySelectorAll("tr")).slice(1);
-    rowsToRemove.forEach(row => row.remove());
-  });
+  /* -------------------------------------------------------------------------- */
+  /*                       1.1 Write save button function                       */
+  /* -------------------------------------------------------------------------- */
 
-  function updateBalance() {
-    const currentIncomeTotal = parseFloat(incomeTotalElement.textContent) || 0;
-    const currentExpenseTotal = parseFloat(expenseEl.textContent) || 0;
-    const currentBalance = currentIncomeTotal - currentExpenseTotal;
-    balanceEl.textContent = currentBalance.toFixed(2);
-  }
+  formEl.addEventListener("submit", function (event) {
+    event.preventDefault();
 
-  function updateIncomeTotal() {
-    const currentIncomeTotal = parseFloat(incomeTotalElement.textContent) || 0;
-    const newIncome = parseFloat(incomeInput.value) || 0;
-    const updatedIncomeTotal = currentIncomeTotal + newIncome;
-    incomeTotalElement.textContent = updatedIncomeTotal.toFixed(2);
-    updateBalance();
-  }
+    // 1.call the elements from the form
 
-  ekleBtn.addEventListener("click", function () {
-    if (parseFloat(incomeInput.value) <= 0) {
-      alert("Please enter a valid income amount.");
+    const dateEl = document.getElementById("date-el");
+    const expenseEl = document.getElementById("expense-el");
+    const expenseTypeEl = document.getElementById("expenseType-el");
+
+    // Validate input values
+    const expenseValue = parseFloat(expenseEl.value);
+    if (isNaN(expenseValue)) {
+      // Handle invalid input (e.g., show an error message)
+      alert("Invalid expense value");
       return;
     }
 
-    updateIncomeTotal();
+    // 2.Create a new row
+    const newRow = document.createElement("tr"); //row
 
+    // 3.Create cells and add values
+    const dateCell = document.createElement("td"); // date
+    dateCell.textContent = dateEl.value;
+    newRow.appendChild(dateCell);
+
+    const expenseTypeCell = document.createElement("td"); // expense type
+    expenseTypeCell.textContent = expenseTypeEl.value;
+    newRow.appendChild(expenseTypeCell);
+
+    const amountCell = document.createElement("td"); // expense
+    amountCell.textContent = expenseEl.value;
+    newRow.appendChild(amountCell);
+
+    const actionCell = document.createElement("td"); //action
+    const icon = document.createElement("i");
+    icon.className = "bi bi-trash";
+    actionCell.appendChild(icon);
+    newRow.appendChild(actionCell);
+
+    // 4. Add row to the table body
+
+    table1Body.appendChild(newRow);
+
+    /* -------------------------------------------------------------------------- */
+    /*                1.2 Update expense total inside the save function               */
+    /* -------------------------------------------------------------------------- */
+
+    const currentExpenseTotal = parseFloat(expenseTotal.textContent) || 0;
+    const newExpenseTotal = currentExpenseTotal + parseFloat(expenseEl.value);
+    expenseTotal.textContent = parseFloat(newExpenseTotal).toFixed(2);
+    updateBalance();
+
+    /* -------------------------------------------------------------------------- */
+    /*             1.3 Write delete function inside the save function             */
+    /* -------------------------------------------------------------------------- */
+
+    actionCell.addEventListener("click", function () {
+      newRow.remove();
+    });
+
+    // Clear form inputs
+
+    formEl.reset();
+  });
+
+  /* -------------------------------------------------------------------------- */
+  /*                              2.Uptade Income                              */
+  /* -------------------------------------------------------------------------- */
+  const currentIncomeTotal = parseFloat(incomeTotal.textContent) || 0;
+  const newIncomeTotal = currentIncomeTotal + parseFloat(incomeInput.value);
+  incomeTotal.textContent = newIncomeTotal;
+
+  // *************************************************************************** //
+
+  /* -------------------------------------------------------------------------- */
+  /*                        3. Write Add button function                        */
+  /* -------------------------------------------------------------------------- */
+
+  addBtn.addEventListener("click", function () {
+    const newIncome = parseFloat(incomeInput.value);
+    if (isNaN(newIncome)) {
+     alert("Invalid income value");
+      return;
+    }
+
+    const currentIncomeTotal = parseFloat(incomeTotal.textContent) || 0;
+    const updatedIncomeTotal = (currentIncomeTotal + newIncome).toFixed(2);
+    incomeTotal.textContent = updatedIncomeTotal;
     incomeInput.value = "";
+    updateBalance();
   });
 
-  kaydetButton.addEventListener("click", function () {
-    const dateValue = document.getElementById("date").value;
-    const quantityValue = document.getElementById("quantity").value;
-    const spendTypeValue = document.getElementById("spendtype").value;
+  /* -------------------------------------------------------------------------- */
+  /*                 4. Update balance             
+    /* -------------------------------------------------------------------------- */
+  function updateBalance() {
+    const currentIncomeTotal = parseFloat(incomeTotal.textContent) || 0;
+    const currentExpenseTotal = parseFloat(expenseTotal.textContent) || 0;
+    const newBalance = currentIncomeTotal - currentExpenseTotal;
+    balance.textContent = newBalance.toFixed(2);
+  }
 
-      if (!dateValue || !quantityValue || !spendTypeValue) {
-      alert("Please fill in all the fields.");
-      return;
-    }
- 
-    const expenseTable = document.getElementById("expense-table");
-
-    const newRow = expenseTable.insertRow();
-
-    const dateCell = newRow.insertCell(0);
-    const spendTypeCell = newRow.insertCell(1);
-    const quantityCell = newRow.insertCell(2);
-    const actionCell = newRow.insertCell(3);
-
-    dateCell.textContent = dateValue;
-    spendTypeCell.textContent = spendTypeValue;
-    quantityCell.textContent = quantityValue;
-    const deleteBtn = document.createElement("button");
-    deleteBtn.classList.add("delete", "btn", "btn-danger");
-    deleteBtn.innerText = "Delete";
-    actionCell.appendChild(deleteBtn);
-    // actionCell.innerHTML = '<button class="btn btn-danger">Delete</button>';
-
-    deleteBtn.addEventListener('click' , function() {
-      expenseTable.deleteRow(newRow.rowIndex);
-    })
-
-    const currentExpenseTotal = parseFloat(expenseEl.textContent) || 0;
-    const newExpense = parseFloat(quantityValue) || 0;
-    const updatedExpenseTotal = currentExpenseTotal + newExpense;
-    expenseEl.textContent = updatedExpenseTotal.toFixed(2);
-
-    updateBalance();
-
-    document.getElementById("date").value = "";
-    document.getElementById("quantity").value = "";
-    document.getElementById("spendtype").value = "";
+  /* -------------------------------------------------------------------------- */
+  /*                         5.Write clear all function                         */
+  /* -------------------------------------------------------------------------- */
+  eraserEl.addEventListener("click", function () {
+    table1Body.textContent = "";
+    balance.textContent = "0";
+    incomeTotal.textContent = "0";
+    expenseTotal.textContent = "0";
   });
 });
