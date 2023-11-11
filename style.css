@@ -6,6 +6,8 @@
 
 body {
   height: 100vh;
+  display: flex;
+  flex-direction: column;
   
 }
 
@@ -15,7 +17,7 @@ body {
   flex-direction: column;
   transform-origin: top;
   transform: scale(0.8);
-  width: 600px;
+   max-width: 600px;
   margin: 20px auto;
   height: 100vh;
   text-align: center;
