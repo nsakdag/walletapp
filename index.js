@@ -71,6 +71,13 @@ document.addEventListener("DOMContentLoaded", function () {
     /* -------------------------------------------------------------------------- */
 
     actionCell.addEventListener("click", function () {
+          // Silme işlemi gerçekleştiğinde harcamanın değerini al
+    const deletedExpense = parseFloat(amountCell.textContent) || 0;
+
+    // Silinen harcamayı toplam harcamadan çıkart
+    const newExpenseTotalAfterDelete = newExpenseTotal - deletedExpense;
+    expenseTotal.textContent = parseFloat(newExpenseTotalAfterDelete).toFixed(2);
+    updateBalance()
       newRow.remove();
     });
 

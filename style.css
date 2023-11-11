@@ -15,9 +15,7 @@ body {
   flex-direction: column;
   transform-origin: top;
   transform: scale(0.8);
-
   width: 600px;
-
   margin: 20px auto;
   height: 100vh;
   text-align: center;
@@ -43,5 +41,5 @@ body {
 }
 
 .bi-trash:hover {
-  transform: scale(1.1);
+  transform: scale(1.2);
 }
