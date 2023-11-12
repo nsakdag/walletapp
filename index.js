@@ -25,9 +25,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Validate input values
     const expenseValue = parseFloat(expenseEl.value);
-    if (isNaN(expenseValue) || dateEl.textContent == '' || expenseTypeEl.textContent == '' ) {
-      // Handle invalid input (e.g., show an error message)
-      alert("Invalid expense value");
+    if(isNaN(expenseValue) || dateEl.value == '' || expenseTypeEl.value == '' ) {
+      alert("Please fill all the expense explanations!");
       return;
     }
 
