@@ -1,134 +1,188 @@
-document.addEventListener("DOMContentLoaded", function () {
-  /* ---------------------- call whole elements form DOM ---------------------- */
 
-  const formEl = document.getElementById("form");
-  const table1Body = document.getElementById("table1-body");
-  const incomeInput = document.getElementById("income-input");
-  const addBtn = document.getElementById("add-btn");
-  const incomeTotal = document.getElementById("income-total");
-  const expenseTotal = document.getElementById("expense-total");
-  const balance = document.getElementById("balance");
-  const eraserEl = document.getElementById("eraser");
+//selectors
 
-  /* -------------------------------------------------------------------------- */
-  /*                       1.1 Write save button function                       */
-  /* -------------------------------------------------------------------------- */
+const ekleBtn = document.getElementById("ekle-btn");
+const gelirInput = document.getElementById("gelir-input");
+const ekleFormu = document.getElementById("ekle-formu");  // ınput + button
 
-  formEl.addEventListener("submit", function (event) {
-    event.preventDefault();
+// Variables
 
-    // 1.call the elements from the form
+let gelirler = 0; //gelir girişlerini tutacak olan değişken
+let harcamaListesi = []; //harcama objelerimizi tutacak olan array
 
-    const dateEl = document.getElementById("date-el");
-    const expenseEl = document.getElementById("expense-el");
-    const expenseTypeEl = document.getElementById("expenseType-el");
 
-    // Validate input values
-    const expenseValue = parseFloat(expenseEl.value);
-    if(isNaN(expenseValue) || dateEl.value == '' || expenseTypeEl.value == '' ) {
-      alert("Please fill all the expense explanations!");
-      return;
+//Hesap tablosu   // en alt taraf
+
+const gelirinizTd = document.getElementById("geliriniz")
+const giderinizTd = document.getElementById("gideriniz")
+const kalanTd = document.getElementById("kalan")
+const kalanTh = document.getElementById("kalanTh")
+
+
+//harcama Formu  // kaydet tarafı
+const harcamaFormu = document.getElementById("harcama-formu")
+const harcamaAlaniInput = document.getElementById("harcama-alani")
+const tarihInput = document.getElementById("tarih")
+const miktarInput = document.getElementById("miktar")
+
+//harcama tablosu
+const harcamaBody = document.getElementById("harcama-body")
+const temizleBtn = document.getElementById("temizle-btn")
+
+
+//gelir Ekle Formu
+
+
+ekleFormu.addEventListener("submit", (e) => {
+    e.preventDefault()
+    gelirler = gelirler + Number(gelirInput.value)
+   
+    localStorage.setItem("gelirler", gelirler)
+    gelirinizTd.innerText = gelirler
+    ekleFormu.reset()
+    hesaplaVeGuncelle()
+})
+
+// Sayfa ilk açıldığında localStorage de bulunan verileri ekrana yazdırır, değişkenlere atama yapar
+
+window.addEventListener("load", () => {
+    gelirler = Number(localStorage.getItem("gelirler")) || 0
+    gelirinizTd.innerText = gelirler
+    tarihInput.valueAsDate = new Date()
+    harcamaListesi = JSON.parse(localStorage.getItem("harcamalar")) || []
+
+    harcamaListesi.forEach((harcama) => harcamayiDomaYaz(harcama))
+    hesaplaVeGuncelle()
+
+})
+
+// Harcama girişlerinin yapılması
+
+harcamaFormu.addEventListener("submit", (e) => {
+    e.preventDefault() // reload u engeller
+
+    const yeniHarcama = {
+        id: new Date().getTime(),
+        // tarih: tarihInput.value,
+        tarih: new Date(tarihInput.value).toLocaleDateString(),
+        alan: harcamaAlaniInput.value,
+        miktar: miktarInput.value
+
     }
 
-    // 2.Create a new row
-    const newRow = document.createElement("tr"); //row
+    // console.log(yeniHarcama)
+    harcamaFormu.reset()
+    tarihInput.valueAsDate = new Date()
 
-    // 3.Create cells and add values
-    const dateCell = document.createElement("td"); // date
-    dateCell.textContent = dateEl.value;
-    newRow.appendChild(dateCell);
-
-    const expenseTypeCell = document.createElement("td"); // expense type
-    expenseTypeCell.textContent = expenseTypeEl.value;
-    newRow.appendChild(expenseTypeCell);
-
-    const amountCell = document.createElement("td"); // expense
-    amountCell.textContent = expenseEl.value;
-    newRow.appendChild(amountCell);
-
-    const actionCell = document.createElement("td"); //action
-    const icon = document.createElement("i");
-    icon.className = "bi bi-trash";
-    actionCell.appendChild(icon);
-    newRow.appendChild(actionCell);
-
-    // 4. Add row to the table body
-
-    table1Body.appendChild(newRow);
-
-    /* -------------------------------------------------------------------------- */
-    /*                1.2 Update expense total inside the save function               */
-    /* -------------------------------------------------------------------------- */
-
-    const currentExpenseTotal = parseFloat(expenseTotal.textContent) || 0;
-    const newExpenseTotal = currentExpenseTotal + parseFloat(expenseEl.value);
-    expenseTotal.textContent = parseFloat(newExpenseTotal).toFixed(2);
-    updateBalance();
-
-    /* -------------------------------------------------------------------------- */
-    /*             1.3 Write delete function inside the save function             */
-    /* -------------------------------------------------------------------------- */
-
-    actionCell.addEventListener("click", function () {
-          // Silme işlemi gerçekleştiğinde harcamanın değerini al
-    const deletedExpense = parseFloat(amountCell.textContent) || 0;
-
-    // Silinen harcamayı toplam harcamadan çıkart
-    const newExpenseTotalAfterDelete = newExpenseTotal - deletedExpense;
-    expenseTotal.textContent = parseFloat(newExpenseTotalAfterDelete).toFixed(2);
-    updateBalance()
-      newRow.remove();
-    });
-
-    // Clear form inputs
-
-    formEl.reset();
-  });
-
-  /* -------------------------------------------------------------------------- */
-  /*                              2.Uptade Income                              */
-  /* -------------------------------------------------------------------------- */
-  const currentIncomeTotal = parseFloat(incomeTotal.textContent) || 0;
-  const newIncomeTotal = currentIncomeTotal + parseFloat(incomeInput.value);
-  incomeTotal.textContent = newIncomeTotal;
+    harcamaListesi.push(yeniHarcama)
+    localStorage.setItem("harcamalar", JSON.stringify(harcamaListesi))
+    harcamayiDomaYaz(yeniHarcama)
+    hesaplaVeGuncelle()
+    console.log(harcamaListesi)
+  
+})
 
 
 
-  /* -------------------------------------------------------------------------- */
-  /*                        3. Write Add button function                        */
-  /* -------------------------------------------------------------------------- */
 
-  addBtn.addEventListener("click", function () {
-    const newIncome = parseFloat(incomeInput.value);
-    if (isNaN(newIncome)) {
-     alert("Invalid income value");
-      return;
+//Harcamayı Dom'a yaz
+
+const harcamayiDomaYaz = ({ id, miktar, tarih, alan }) => {
+
+
+    const tr = document.createElement("tr"); // tr elementi oluşturur
+    // tr elementinin ilk üç td sini oluşturur.
+    const appendTd = (content) => {
+        const td = document.createElement("td");
+        td.textContent = content;
+        return td;
+    }
+    // tr elementinin son td sini oluşturur.
+    const createLastTd = () => {
+        const td = document.createElement("td");
+        const iElement = document.createElement("i");
+        iElement.id = id;
+        iElement.className = "fa-solid fa-trash-can text-danger"
+        iElement.type = "button";
+        td.appendChild(iElement);
+        return td;
     }
 
-    const currentIncomeTotal = parseFloat(incomeTotal.textContent) || 0;
-    const updatedIncomeTotal = (currentIncomeTotal + newIncome).toFixed(2);
-    incomeTotal.textContent = updatedIncomeTotal;
-    incomeInput.value = "";
-    updateBalance();
-  });
+    // td oluşturarak tr ye ekleme
 
-  /* -------------------------------------------------------------------------- */
-  /*                 4. Update balance             
-    /* -------------------------------------------------------------------------- */
-  function updateBalance() {
-    const currentIncomeTotal = parseFloat(incomeTotal.textContent) || 0;
-    const currentExpenseTotal = parseFloat(expenseTotal.textContent) || 0;
-    const newBalance = currentIncomeTotal - currentExpenseTotal;
-    balance.textContent = newBalance.toFixed(2);
-  }
+    tr.append(
+        appendTd(tarih),
+        appendTd(alan),
+        appendTd(miktar),
+        createLastTd()
+    )
 
-  /* -------------------------------------------------------------------------- */
-  /*                         5.Write clear all function                         */
-  /* -------------------------------------------------------------------------- */
-  eraserEl.addEventListener("click", function () {
-    table1Body.textContent = "";
-    balance.textContent = "0";
-    incomeTotal.textContent = "0";
-    expenseTotal.textContent = "0";
-  });
-});
+
+    harcamaBody.append(tr) // harcamayı sona ekler
+    // harcamaBody.prepend(tr) // harcamayı öne ekler
+
+
+
+}
+
+const hesaplaVeGuncelle = () => {
+    // gelirinizTd.innerText = gelirler //geliri ekrana yaz
+    gelirinizTd.innerText = gelirler//geliri ekrana yaz
+
+    //giderler toplamını bul
+    const giderler = harcamaListesi.reduce(
+        (toplam, harcama) => toplam + Number(harcama.miktar), 0
+    )
+        
+   
+    giderinizTd.innerText = new Intl.NumberFormat().format(giderler) //gider toplamını ekrana yaz
+    kalanTd.innerText = new Intl.NumberFormat().format(gelirler - giderler)
+
+    // Kalan 0 dan küçükse kalan ve miktarı kırmızı yaz
+    const borclu = gelirler - giderler < 0;
+    // console.log(borclu)
+
+    kalanTd.classList.toggle('text-danger', borclu)
+    kalanTh.classList.toggle('text-danger', borclu)
+}
+
+harcamaBody.addEventListener("click", (e) => {
+    // console.log(e.target)
+
+    if (e.target.classList.contains("fa-trash-can")) {
+        e.target.parentElement.parentElement.remove()
+    }
+    //silinen harcamanın id sini alır
+    const id = e.target.id
+    // console.log(id)
+    // silinen harcamayı array den çıkarır
+    harcamaListesi = harcamaListesi.filter((harcama => harcama.id != id))
+    //yeni array i local e update eder
+    localStorage.setItem("harcamalar", JSON.stringify(harcamaListesi))
+
+    //silindikten sonra yeniden hesapla
+
+    hesaplaVeGuncelle()
+
+
+
+})
+
+temizleBtn.addEventListener("click", () => {
+    if (confirm('Silmek istediğinize emin misiniz?')) {
+        harcamaListesi = [] //tüm harcamaları listeden siler
+        gelirler = 0 //geliri sıfırlar
+        // localStorage.clear() // tüm local storage siler
+        localStorage.removeItem('gelirler') // sadece gelirleri siler
+        localStorage.removeItem('harcamalar') // sadece gelirleri siler
+        harcamaBody.innerHTML = "" // DOM dan harcamaları siler
+        hesaplaVeGuncelle() //silindikten sonra yeniden hesapla
+    }
+})
+
+const giderler = harcamaListesi.reduce(
+    (toplam, harcama) => toplam + Number(harcama.miktar), 0
+)
+
+
+
